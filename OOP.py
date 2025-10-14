@@ -73,10 +73,14 @@ class EventBooker:
         return True
 
 
+from datetime import datetime, date
+
+
 class Counter:
     def __init__(self):
         self.count = 0
         self.decrement = 1
+        self.history_count = {}
 
     def increment(self):
         self.count += 1
@@ -96,6 +100,11 @@ class Counter:
         self.count = 0
         return f"{self.count} wiped completely"
 
+    def count_history(self):
+        now = date.today()
+        self.history_count[now] = self.count
+        return f"The history date {self.history_count.keys()} and count {self.history_count.values()}"
+
 
 practice = Counter()
 practice.set_count(200)
@@ -104,4 +113,6 @@ print(practice.reset())
 practice.set_count(205)
 print(practice.decrement_count())
 print(practice.increment())
-
+print(practice.count_history())
+print(practice.decrement_count())
+print(practice.count_history())
