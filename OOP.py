@@ -1,3 +1,6 @@
+from typing import List, Any, Type
+
+
 class Car:
     def __init__(self, name, categories, next_generation=None):
         self.name = name
@@ -106,13 +109,121 @@ class Counter:
         return f"The history date {self.history_count.keys()} and count {self.history_count.values()}"
 
 
-practice = Counter()
-practice.set_count(200)
-print(practice.get_count())
-print(practice.reset())
-practice.set_count(205)
-print(practice.decrement_count())
-print(practice.increment())
-print(practice.count_history())
-print(practice.decrement_count())
-print(practice.count_history())
+class ParkingLotManager:
+    def __init__(self, capacity: int):
+        self.global_parking = defaultdict(int)
+        self.capacity = capacity
+    '''
+    Update your class so that:
+
+    The same car_id cannot be parked twice at the same time.
+
+    If park(car_id) is called for a car already parked, return False.
+
+    If a car leaves, it should be allowed to park again.
+    '''
+    def park(self, car_id) -> bool:
+        if self.capacity == 0:
+            return False
+
+        if len(self.global_parking) < self.capacity and self.global_parking[car_id] != 2:
+            self.global_parking[car_id] += 1
+            return True
+        else:
+            return False
+
+    def leave(self, car_id) -> bool:
+        if car_id in self.global_parking:
+            self.global_parking[car_id] -= 1  # Indicating that the vehicle has left
+            return True
+        else:
+            return False  # that vehicle wasn't found
+
+    def get_parked(self):
+        return tuple(self.global_parking.keys())
+
+
+
+
+def test_leave_method_basic_removal():
+    print("Running: test_leave_method_basic_removal")
+    manager = ParkingLotManager(3)
+    try:
+        assert manager.park(1)
+        assert manager.park(2)
+        assert manager.park(3)
+        assert manager.leave(2)
+        parked = set(manager.get_parked())
+        assert parked == {1, 3}, f"Expected {{1,3}}, got {parked}"
+        print("✅ PASSED\n")
+    except AssertionError as e:
+        print(f"❌ FAILED: {e}\n")
+
+
+def test_leave_method_car_not_present():
+    print("Running: test_leave_method_car_not_present")
+    manager = ParkingLotManager(3)
+    try:
+        manager.park(10)
+        manager.park(11)
+        assert not manager.leave(99)
+        parked = set(manager.get_parked())
+        assert parked == {10, 11}
+        print("✅ PASSED\n")
+    except AssertionError as e:
+        print(f"❌ FAILED: {e}\n")
+
+
+def test_leave_method_double_leave():
+    print("Running: test_leave_method_double_leave")
+    manager = ParkingLotManager(3)
+    try:
+        manager.park(42)
+        assert manager.leave(42)
+        assert not manager.leave(42)
+        assert set(manager.get_parked()) == set()
+        print("✅ PASSED\n")
+    except AssertionError as e:
+        print(f"❌ FAILED: {e}\n")
+
+
+def test_leave_method_empty_lot():
+    print("Running: test_leave_method_empty_lot")
+    manager = ParkingLotManager(2)
+    try:
+        assert not manager.leave(5)
+        assert manager.get_parked() == [] or set(manager.get_parked()) == set()
+        print("✅ PASSED\n")
+    except AssertionError as e:
+        print(f"❌ FAILED: {e}\n")
+
+
+def test_leave_method_mixed_sequence():
+    print("Running: test_leave_method_mixed_sequence")
+    manager = ParkingLotManager(3)
+    try:
+        assert manager.park(10)
+        assert manager.park(11)
+        assert manager.park(12)
+        assert manager.leave(11)
+        assert manager.park(13)
+        assert not manager.leave(15)
+        assert manager.leave(10)
+        parked = set(manager.get_parked())
+        assert parked == {12, 13}, f"Expected {{12,13}}, got {parked}"
+        print("✅ PASSED\n")
+    except AssertionError as e:
+        print(f"❌ FAILED: {e}\n")
+
+
+def run_all_leave_tests():
+    test_leave_method_basic_removal()
+    test_leave_method_car_not_present()
+    test_leave_method_double_leave()
+    test_leave_method_empty_lot()
+    test_leave_method_mixed_sequence()
+
+
+# Run all tests
+run_all_leave_tests()
+
