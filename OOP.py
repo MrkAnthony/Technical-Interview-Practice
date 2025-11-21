@@ -113,6 +113,7 @@ class ParkingLotManager:
     def __init__(self, capacity: int):
         self.global_parking = defaultdict(int)
         self.capacity = capacity
+
     '''
     Update your class so that:
 
@@ -122,6 +123,7 @@ class ParkingLotManager:
 
     If a car leaves, it should be allowed to park again.
     '''
+
     def park(self, car_id) -> bool:
         if self.capacity == 0:
             return False
@@ -141,8 +143,6 @@ class ParkingLotManager:
 
     def get_parked(self):
         return tuple(self.global_parking.keys())
-
-
 
 
 def test_leave_method_basic_removal():
@@ -226,4 +226,3 @@ def run_all_leave_tests():
 
 # Run all tests
 run_all_leave_tests()
-
