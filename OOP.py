@@ -145,84 +145,174 @@ class ParkingLotManager:
         return tuple(self.global_parking.keys())
 
 
-def test_leave_method_basic_removal():
-    print("Running: test_leave_method_basic_removal")
-    manager = ParkingLotManager(3)
-    try:
-        assert manager.park(1)
-        assert manager.park(2)
-        assert manager.park(3)
-        assert manager.leave(2)
-        parked = set(manager.get_parked())
-        assert parked == {1, 3}, f"Expected {{1,3}}, got {parked}"
-        print("✅ PASSED\n")
-    except AssertionError as e:
-        print(f"❌ FAILED: {e}\n")
+class Pokemon:
+    def __init__(self, name, types, evolution=None):
+        self.name = name
+        self.types = types
+        self.is_caught = False
+        self.evolution = evolution
+
+    def __str__(self):
+        return self.name
+
+    def print_pokemon(self):
+        print({
+            "name": self.name,
+            "types": self.types,
+            "is_caught": self.is_caught
+        })
+
+    def caught_pokemon(self):
+        self.is_caught = True
+
+    def choose_pokemon(self):
+        if self.is_caught is True:
+            print(f"{self.name} I choose you")
+        else:
+            print(f"{self.name} is wild! Catch them if you can!")
+
+    def add_type(self, types):
+        self.types.append(types)
 
 
-def test_leave_method_car_not_present():
-    print("Running: test_leave_method_car_not_present")
-    manager = ParkingLotManager(3)
-    try:
-        manager.park(10)
-        manager.park(11)
-        assert not manager.leave(99)
-        parked = set(manager.get_parked())
-        assert parked == {10, 11}
-        print("✅ PASSED\n")
-    except AssertionError as e:
-        print(f"❌ FAILED: {e}\n")
+def get_by_type(collected_pokemon, pokemon_type):
+    res = []
+    for poke in collected_pokemon:
+        if pokemon_type in poke.types:
+            res.append(poke)
+    return res
 
 
-def test_leave_method_double_leave():
-    print("Running: test_leave_method_double_leave")
-    manager = ParkingLotManager(3)
-    try:
-        manager.park(42)
-        assert manager.leave(42)
-        assert not manager.leave(42)
-        assert set(manager.get_parked()) == set()
-        print("✅ PASSED\n")
-    except AssertionError as e:
-        print(f"❌ FAILED: {e}\n")
+class Card:
+    def __init__(self, suit, rank, next=None):
+        self.suit = suit
+        self.rank = rank
+        self.next = next
+
+    def print_card(self):
+        print(f"{self.rank} of {self.suit}")
+
+    def update_suit(self, string):
+        self.suit = string
+
+    def is_valid(self) -> bool:
+        valid_suits = ["Hearts", "Spades", "Clubs", "Diamonds"]
+        valid_ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+
+        if self.suit in valid_suits and self.rank in valid_ranks:
+            return True
+        else:
+            return False
+
+    def get_value(self):
+        ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
+        if self.rank in ranks:
+            return int(self.rank)
+        elif self.rank == "Ace":
+            return 1
+        elif self.rank == "Jack":
+            return 11
+        elif self.rank == "Queen":
+            return 12
+        elif self.rank == "King":
+            return 13
+        else:
+            return None
 
 
-def test_leave_method_empty_lot():
-    print("Running: test_leave_method_empty_lot")
-    manager = ParkingLotManager(2)
-    try:
-        assert not manager.leave(5)
-        assert manager.get_parked() == [] or set(manager.get_parked()) == set()
-        print("✅ PASSED\n")
-    except AssertionError as e:
-        print(f"❌ FAILED: {e}\n")
+def print_hand(starting_card) -> list[str]:
+    current_hand = starting_card
+    res = []
+
+    while current_hand:
+        res.append(current_hand)
+        current_hand = current_hand.next
+    return res
 
 
-def test_leave_method_mixed_sequence():
-    print("Running: test_leave_method_mixed_sequence")
-    manager = ParkingLotManager(3)
-    try:
-        assert manager.park(10)
-        assert manager.park(11)
-        assert manager.park(12)
-        assert manager.leave(11)
-        assert manager.park(13)
-        assert not manager.leave(15)
-        assert manager.leave(10)
-        parked = set(manager.get_parked())
-        assert parked == {12, 13}, f"Expected {{12,13}}, got {parked}"
-        print("✅ PASSED\n")
-    except AssertionError as e:
-        print(f"❌ FAILED: {e}\n")
+class Hand:
+    def __init__(self):
+        self.cards = []
+
+    def add_card(self, card):
+        self.cards.append(card)
+
+    def remove_card(self, card):
+        if card not in self.cards:
+            return False
+        else:
+            self.cards.remove(card)
+            return True
 
 
-def run_all_leave_tests():
-    test_leave_method_basic_removal()
-    test_leave_method_car_not_present()
-    test_leave_method_double_leave()
-    test_leave_method_empty_lot()
-    test_leave_method_mixed_sequence()
+def sum_hand(hand):
+    total = 0
+    for card in hand.cards:
+        total += card.get_value()
+    return total
 
 
-# Run all tests
-run_all_leave_tests()
+class Node:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+
+
+def add_first(head, new_node):
+    current = head
+    while current.head:
+        current = new_node
+        current = current.next
+    return
+
+
+node_1 = Node("Jigglypuff")
+node_2 = Node("Wigglytuff")
+node_1.next = node_2
+
+from collections import defaultdict
+
+
+class Player:
+    def __init__(self, character, kart, outcomes):
+        self.character = character
+        self.kart = kart
+        self.items = []
+        self.outcomes = outcomes
+
+    def get_tournament_place(self, opponents):
+        if not opponents:
+            return None
+
+        avg_scores = defaultdict(float)
+        user_avg = sum(self.outcomes) / len(self.outcomes)
+        avg_scores[self.character] = user_avg
+
+        for opponent in opponents:
+            avg_opp = sum(self.outcomes) / len(self.outcomes)
+            avg_scores[opponent.character] = avg_opp
+
+        place = 1
+        for character, score in avg_scores.items():
+            if character == self.character:
+                continue
+
+            if score < avg_scores[self.character]:
+                place += 1
+
+        return place
+
+
+player1 = Player("Mario", "Standard", [1, 2, 1, 1, 3])
+player2 = Player("Luigi", "Standard", [2, 1, 3, 2, 2])
+player3 = Player("Peach", "Standard", [3, 3, 2, 3, 1])
+
+opponents = [player2, player3]
+print(f"{player1.character} was number {player1.get_tournament_place(opponents)}")
+
+
+class API:
+    def __init__(self, debit):
+        self.debit = debit
+        

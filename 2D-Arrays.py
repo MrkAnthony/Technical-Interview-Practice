@@ -26,8 +26,6 @@ while l < r and top < bottom:
         res.append(matrix[bottom - 1][i])
     bottom -= 1
 
-print(res)
-
 matrix_2D = [
     [4, 8, 12],
     [16, 20, 24],
@@ -47,4 +45,21 @@ def find_target(matrix, target):
     return False
 
 
-print(find_target(matrix_2D, 25))
+strs = ["357", "248", "139"]
+strs2 = ["111", "222", "333"]
+strs3 = ["123", "234", "345"]
+
+
+def find_increasing_col(strs):
+    cnt = 0
+    for col in range(len(strs[0])):
+        for row in range(1, len(strs)):
+            if strs[row][col] > strs[row - 1][col]:
+                cnt += 1
+                break
+    return cnt
+
+
+print(find_increasing_col(strs))
+print(find_increasing_col(strs2))
+print(find_increasing_col(strs3))
